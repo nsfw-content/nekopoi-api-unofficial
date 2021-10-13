@@ -2,11 +2,12 @@ const cheerio = require('cheerio');
 const axios = require('axios');
 const config = require('../config.json');
 
+
 let re = /-\d+[Xx]\d+/;
 
 const home = async (req, res) => {
     try {
-        let page = req.params.page
+        let page = (Number.isFinite(parseInt(req.params.page))) ? parseInt(req.params.page) : 1
         const { data } = await axios.get(`${config.url_api}/page/${page}`);
         let $ = cheerio.load(data);
 
@@ -62,11 +63,10 @@ const home = async (req, res) => {
     }
 }
 
-
 const search = async (req, res) => {
     try {
         let query = (req.query.s !== "") ? req.query.s : res.status(400).send('')
-        let page = (req.params.page !== null) ? req.params.page : 1
+        let page = (Number.isFinite(parseInt(req.params.page))) ? req.params.page : 1
         const { data } = await axios.get(`${config.url_api}/page/${page}/?s=${query}&post_type=anime`)
         let $ = cheerio.load(data)
 
@@ -96,7 +96,40 @@ const search = async (req, res) => {
     }
 }
 
+const category = async (req, res) => {
+    try {
+        const categories = { "hentai": "/category/hentai", "3d-hentai": "/category/3d-hentai", "jav": "/category/jav", "jav-cosplay": "/tag/jav-cosplay" }
+        let category = categories[req.params.category]
+        let page = (Number.isFinite(parseInt(req.params.page))) ? parseInt(req.params.page) : 1
+        const { data } = await axios.get(`${config.url_api}${category}/page/${page}`)
+        let $ = cheerio.load(data)
+
+        const resultList = $('div.result > ul > li')
+        let resultPush = []
+        resultList.each((i, elem) => {
+            let type = $(elem).find('div.top').find('a').attr('href').replace(config.url_api, '').split('/')
+            type = (type[1] == "hentai") ? "series" : "hentai"
+            resultPush.push({
+                title: $(elem).find('div.top').find('a').text(),
+                path: $(elem).find('div.top').find('a').attr('href').replace(config.url_api, ''),
+                image: $(elem).find('div.top > div.limitnjg > img').attr('src').replace($(elem).find('div.top > div.limitnjg > img').attr('src').match(re)[0], ""),
+                type: type
+            })
+        })
+
+        const maxPage = $('div.nav-links > a.next').prev().text()
+        res.send({
+            status: 200,
+            maxPage: maxPage,
+            category: req.params.category,
+            result: resultPush
+        })
+
+    } catch (err) {
+        res.send(err)
+    }
+}
 
 module.exports = {
-    home, search
+    home, search, category
 }

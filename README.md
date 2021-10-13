@@ -3,10 +3,10 @@
 
 - [x] Home
 - [x] Search
-- [ ] Hentai
-- [ ] 3D Hentai
-- [ ] JAV
-- [ ] JAV Cosplay
+- [x] Hentai
+- [x] 3D Hentai
+- [x] JAV
+- [x] JAV Cosplay
 - [ ] Hentai List
 - [ ] JAV List
 - [ ] Genre List
@@ -45,8 +45,9 @@ npm run dev
 
 **API Version** : v1
 
-| Endpoint          | Params                 | Default | Example                                        |
-| ----------------- | ---------------------- | ------- | ---------------------------------------------- |
-| /home/:page       | page : Int             | page: 1 | https://site.com/api/home/1                    |
-| /search/:page/?s= | page : Int, s : String | page: 1 | https://site.com/api/home/1/search/?s=netorare |
+| Endpoint                  | Params                        | Default                                                          | Example                                   |
+| ------------------------- | ----------------------------- | ---------------------------------------------------------------- | ----------------------------------------- |
+| /home/:page               | page : Int                    | page: 1                                                          | https://site.com/api/home/1               |
+| /search/:page/?s=         | page : Int, s : String        | page: 1                                                          | https://site.com/api/search/1/?s=netorare |
+| /category/:category/:page | page : Int, category : String | page : 1, category : ["hentai","3d-hentai", "jav", "jav-cosplay] | https://site.com/api/category/hentai/1    |
 
