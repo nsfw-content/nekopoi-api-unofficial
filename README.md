@@ -45,9 +45,9 @@ npm run dev
 
 **API Version** : v1
 
-| Endpoint                  | Params                        | Default                                                          | Example                                   |
-| ------------------------- | ----------------------------- | ---------------------------------------------------------------- | ----------------------------------------- |
-| /home/:page               | page : Int                    | page: 1                                                          | https://site.com/api/home/1               |
-| /search/:page/?s=         | page : Int, s : String        | page: 1                                                          | https://site.com/api/search/1/?s=netorare |
-| /category/:category/:page | page : Int, category : String | page : 1, category : ["hentai","3d-hentai", "jav", "jav-cosplay] | https://site.com/api/category/hentai/1    |
+| Endpoint                  | Params                        | Default                                                   | Example                                   |
+| ------------------------- | ----------------------------- | --------------------------------------------------------- | ----------------------------------------- |
+| /home/:page               | page : Int                    | page: 1                                                   | https://site.com/api/home/1               |
+| /search/:page/?s=         | page : Int, s : String        | page: 1                                                   | https://site.com/api/search/1/?s=netorare |
+| /category/:category/:page | page : Int, category : String | page : 1, category : [hentai,3d-hentai, jav, jav-cosplay] | https://site.com/api/category/hentai/1    |
 
