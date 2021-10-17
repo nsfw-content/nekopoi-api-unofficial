@@ -3,7 +3,7 @@
 - [x] Home
 - [x] Search
 - [x] Genres
-- [ ] Details
+- [x] Details
 - [x] Hentai
 - [x] 3D Hentai
 - [x] JAV
