@@ -45,12 +45,13 @@ npm run dev
 
 **API Version** : v1
 
-| Endpoint                  | Params                        | Default                                                   | Example                                   |
-| ------------------------- | ----------------------------- | --------------------------------------------------------- | ----------------------------------------- |
-| /home/:page               | page : Int                    | page: 1                                                   | https://site.com/api/home/1               |
-| /search/:page/?s=         | page : Int, s : String        | page: 1                                                   | https://site.com/api/search/1/?s=netorare |
-| /category/:category/:page | page : Int, category : String | page : 1, category : [hentai,3d-hentai, jav, jav-cosplay] | https://site.com/api/category/hentai/1    |
-| /lists/:list              | list : String                 | list: [hentai, jav, genre]                                | https://site.com/api/lists/genre          |
-| /genres/:genre/:page      | genre : String, page : Int    | page : 1                                                  | https://site.com/api/genres/netorare/2    |
+| Endpoint                  | Params                        | Default                                                   | Example                                                                                            |
+| ------------------------- | ----------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| /home/:page               | page : Int                    | page: 1                                                   | https://site.com/api/home/1                                                                        |
+| /search/:page/?s=         | page : Int, s : String        | page: 1                                                   | https://site.com/api/search/1/?s=netorare                                                          |
+| /category/:category/:page | page : Int, category : String | page : 1, category : [hentai,3d-hentai, jav, jav-cosplay] | https://site.com/api/category/hentai/1                                                             |
+| /lists/:list              | list : String                 | list: [hentai, jav, genre]                                | https://site.com/api/lists/genre                                                                   |
+| /genres/:genre/:page      | genre : String, page : Int    | page : 1                                                  | https://site.com/api/genres/netorare/2                                                             |
+| /details/?path=           | path: String                  |                                                           | https://site.com/api/details?path=uncensored-junjou-shoujo-et-cetera-episode-1-subtitle-indonesia/ |  |  |
 
 

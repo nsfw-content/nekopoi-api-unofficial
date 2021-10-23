@@ -2,6 +2,8 @@ const cheerio = require('cheerio');
 const axios = require('axios');
 const config = require('../config.json');
 
+let re = /-\d+[Xx]\d+/;
+
 const bypass = async (link) => {
     await axios({
         method: 'post',
@@ -95,21 +97,22 @@ const detailH = (data, path) => {
     const preg = /<\/b>|<\/strong>/
     const $ = cheerio.load(data)
     // console.log($.html());
-    const img = $('div.thm').find('img').attr('src').replace($('div.thm').find('img').attr('src').match(re)[0], '')
     const title = $('title').text().trim()
-
     const all_episode = (/.+?(?=-ep)/.test(path)) ? '/hentai/' + path.match(/.+?(?=-ep)/)[0].replace('/', '') : ''
     const download_list = []
 
-    let synopsis = '', producers = '', duration = '', genre = '', size = ''
+    let synopsis = '', producers = '', duration = '', genre = '', size = '', img = ''
 
+    img += $('div.thm').find('img').attr('src').replace($('div.thm').find('img').attr('src').match(re)[0], '')
     synopsis += $('div.articles > div.contentpost > div.konten > p').find(`b:contains("Sinopsis"),strong:contains("Sinopsis")`).parent().next().text()
-    producers += getBetween($('div.articles > div.contentpost > div.konten > p').find(`b:contains("Produ"),strong:contains("Produ")`).parent().html(), preg, '<').replace("&nbsp;", '').replace(":", '')
-    duration += getBetween($('div.articles > div.contentpost > div.konten > p').find(`b:contains("Dura"),strong:contains("Dura")`).parent().html(), preg, '<').replace("&nbsp;", ' ')
+    let produc = $('div.articles > div.contentpost > div.konten > p').find(`b:contains("Produ"),strong:contains("Produ")`)
+    producers += (produc.length > 0) ? getBetween(produc.parent().html(), preg, '<').replace("&nbsp;", '').replace(":", '') : null
+    let dura = $('div.articles > div.contentpost > div.konten > p').find(`b:contains("Dura"),strong:contains("Dura")`)
+    duration += (dura.length > 0) ? getBetween(dura.parent().html(), preg, '<') : null
 
-    // // // 
+    //    
     let genres = $('div.articles > div.contentpost > div.konten > p').find(`b:contains("Genre"),strong:contains("Genre")`)
-    genre += getBetween(genres.parent().html(), preg, '<').replace("&nbsp;", '').split(',')
+    genre += (genres.length > 0) ? getBetween(genres.parent().html(), preg, '<').replace("&nbsp;", '').split(',') : null
     let sizes = $('div.articles > div.contentpost > div.konten > p').find(`b:contains("Size"),strong:contains("Size")`)
     size += sizes.parent().text().replace("Size :", "")
 
@@ -136,7 +139,29 @@ const detailH = (data, path) => {
     }
 
 
-    return json = {
+    // 
+    const related = []
+    $('ul.related > li').each((i, el) => {
+        let rtitle = '', rproducers = '', rstatus = '', rgenre = '', rduration = '', rimg = '', rrating = ''
+        $$ = cheerio.load($(el).find('a.series').attr('original-title'))
+        rtitle += $$('div.infoarea > h2').eq(0).text()
+        rproducers += $$('p:contains("Produser")').text().replace("Produser: ", '')
+        rstatus += $$('p:contains("Status")').text().replace("Status: ", '')
+        rduration += $$('p:contains("Dura")').text().replace('Dura: ', '')
+        rrating += $$('p:contains("Skor")').text().replace('Skor: ', '')
+        rimg += $$('img.gambars').attr("src").replace($$('img.gambars').attr("src").match(re)[0], '')
+        related.push({
+            title: rtitle,
+            image: rimg,
+            producers: rproducers,
+            status: rstatus,
+            duration: rduration,
+            rating: rrating
+        })
+
+    })
+
+    res = {
         title: title,
         image: img,
         all_episode,
@@ -149,6 +174,9 @@ const detailH = (data, path) => {
     }
 
 
+    return { data: res, related }
+
+
 }
 
 
@@ -159,18 +187,14 @@ const detail = async (req, res) => {
         // console.log(path);
         const { data } = await axios.get(`${config.url_api}/${path}`)
         let resultPush = []
-        let type = ''
         if (path.includes('hentai/')) {
-            type = 'series'
             resultPush = detailSeries(data, path)
         }
         else {
-            type = 'hentai'
             resultPush = detailH(data, path)
         }
         res.send({
             status: 200,
-            type: type,
             result: resultPush
         })
     } catch (err) {
